@@ -1,0 +1,5 @@
+{
+  "leagueUrl": "http://fantasy.na.lolesports.com/en-US/league/XXXXXX",
+  "proDataUrl": "http://fantasy.na.lolesports.com/en-US/api/season/12",
+  "slackHookUrl" : "https://hooks.slack.com/services/...."
+}
