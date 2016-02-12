@@ -6,6 +6,8 @@ var proDataUrl = require('./config.json').proDataUrl;
 
 var insertBefore = require('./utils/insert');
 var slackRequest = require('./utils/slackRequest');
+var constructDataString = require('./utils/constructDataString');
+var compareRosterChange = require('./utils/compareRosterChange');
 
 request(proDataUrl, function (err, resp, html) {
   if (err) {
@@ -36,16 +38,20 @@ request(proDataUrl, function (err, resp, html) {
     lastRosterChange.forEach(function (rosterChange) {
       if (fileExist) {
         var lastDate = new Date(rosterChange.time[0], rosterChange.time[1] - 1, rosterChange.time[2], rosterChange.time[3], rosterChange.time[4], rosterChange.time[5]);
-        var previousRosterChange = JSON.parse(fs.readFileSync('./lastRosterChange.json', 'utf8')).time;
+        var previousRoster = JSON.parse(fs.readFileSync('./lastRosterChange.json', 'utf8'));
+        var previousRosterChange = previousRoster.time;
         var previousDate = new Date(previousRosterChange[0], previousRosterChange[1] - 1, previousRosterChange[2], previousRosterChange[3], previousRosterChange[4], previousRosterChange[5]);
       } else {
         fs.writeFileSync('./lastRosterChange.json', JSON.stringify(leagueData.fantasyRosterUpdates[0]));
         process.exit(0);
       }
 
-      if (previousDate < lastDate && !rosterChange.addition) {
+      if (previousDate < lastDate) {
         fs.writeFileSync('./lastRosterChange.json', JSON.stringify(rosterChange));
-        slackRequest(JSON.stringify(rosterChange));
+        slackRequest(JSON.stringify(constructDataString(rosterChange, proPlayers, proTeams, leagueData)));
+      } else if (previousDate.getTime() == lastDate.getTime() && compareRosterChange(rosterChange, previousRoster)) {
+        fs.writeFileSync('./lastRosterChange.json', JSON.stringify(rosterChange));
+        slackRequest(JSON.stringify(constructDataString(rosterChange, proPlayers, proTeams, leagueData)));
       }
     });
 
