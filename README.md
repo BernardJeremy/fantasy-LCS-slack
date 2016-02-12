@@ -10,6 +10,7 @@ Node.JS script allowing to send every roster change in a given fantasy league of
 - Simply clone this depot anywhere on your server.
 - Copy [config.json.exemple](https://github.com/BernardJeremy/fantasy-LCS-slack/blob/master/config.json.exemple) file into a `config.json` file.
 - Add your fantasy league url to the `config.json` file.
+- Perform `npm install` command.
 - Install a [incoming-webhooks](https://api.slack.com/incoming-webhooks) on your Slack.
 - Add your link of the Slack incoming-webhooks in the `config.json` file.
 - Optional (but recommended) : Install a task scheduler (like `CRON`) to run the script regularly.
